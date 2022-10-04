@@ -30,8 +30,8 @@ public class UserCreator {
         roleAdmin.add(role1);
         roleUser.add(role2);
 
-        User user1 = new User("admin", "admin", "admin@mail",roleAdmin);
-        User user2 = new User("user", "user",  "user@mail", roleUser);
+        User user1 = new User("Ad", "Min", 100, "admin@mail.ru", "admin", roleAdmin);
+        User user2 = new User("U", "Ser", 1,"user@mail.ru", "user", roleUser);
 
         userService.add(user1);
         userService.add(user2);

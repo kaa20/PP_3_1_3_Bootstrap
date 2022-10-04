@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean addRole(Role role) {
-        Role userBas = roleDao.findByName(role.getRole());
-        if(userBas != null) {return false;}
+        Role userFromDB = roleDao.findByName(role.getRole());
+        if(userFromDB != null) {return false;}
         roleDao.add(role);
         return true;
     }
@@ -54,16 +54,16 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean add(User user) {
-        User userBas = userDao.findByName(user.getUsername());
-        if(userBas != null) {return false;}
+        User userFromDB = userDao.findByName(user.getUsername());
+        if(userFromDB != null) {return false;}
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.add(user);
         return true;
     }
 
     public boolean addUserWithRole(User user, String rolename) {
-        User userBas = userDao.findByName(user.getUsername());
-        if(userBas != null) {return false;}
+        User userFromDB = userDao.findByName(user.getUsername());
+        if(userFromDB != null) {return false;}
         Role role = roleDao.findByName(rolename);
         if (role == null) {
             roleDao.add(new Role(rolename));
@@ -85,10 +85,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public void update(User user) {
-        User userBas = findUserById(user.getId());
-        System.out.println(userBas);
-        System.out.println(user);
-        if(!userBas.getPassword().equals(user.getPassword())) {
+        User userFromDB = findUserById(user.getId());
+        if(!userFromDB.getPassword().equals(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userDao.update(user);
@@ -104,12 +102,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userBas = findUserByUsername(username);
-        if (userBas == null) {
+        User userFromDB = findUserByUsername(username);
+        if (userFromDB == null) {
             throw new UsernameNotFoundException(username + " not found");
         }
-        UserDetails user = new org.springframework.security.core.userdetails.User(userBas.getUsername(), userBas.getPassword(), aug(userBas.getRoles()));
-        return userBas;
+        UserDetails user = new org.springframework.security.core.userdetails.User(userFromDB.getUsername(), userFromDB.getPassword(), aug(userFromDB.getRoles()));
+        return userFromDB;
     }
 
     private Collection<? extends GrantedAuthority> aug(Collection<Role> roles) {
